@@ -3,32 +3,52 @@ from typing import Dict, Any
 
 NIST_PQC_STANDARDS = {
     "ML-KEM": {
-        "standard": "NIST FIPS 203",
+        "name": "ML-KEM",
+        "fips": "NIST FIPS 203",
         "former_name": "CRYSTALS-Kyber",
         "purpose": "General Encryption & Key Encapsulation (KEM)",
         "variants": ["ML-KEM-512 (Category 1)", "ML-KEM-768 (Category 3 - Recommended)", "ML-KEM-1024 (Category 5)"],
-        "hybrid_recommendation": "X25519 + ML-KEM-768 (Hybrid TLS 1.3 / OpenSSH)"
+        "hybrid_mode": "X25519 + ML-KEM-768 (Hybrid TLS 1.3 / OpenSSH)",
+        "status": "Published",
+        "recommended_variant": "ML-KEM-768",
+        "replaces": ["RSA", "DH", "ECDH"],
+        "description": "Primary NIST standard for general-purpose key encapsulation."
     },
     "ML-DSA": {
-        "standard": "NIST FIPS 204",
+        "name": "ML-DSA",
+        "fips": "NIST FIPS 204",
         "former_name": "CRYSTALS-Dilithium",
         "purpose": "General Digital Signatures",
         "variants": ["ML-DSA-44 (Category 2)", "ML-DSA-65 (Category 3 - Recommended)", "ML-DSA-87 (Category 5)"],
-        "hybrid_recommendation": "ECDSA-P256 + ML-DSA-65 (Dual-Signed Certificate / Auth)"
+        "hybrid_mode": "ECDSA-P256 + ML-DSA-65 (Dual-Signed Certificate / Auth)",
+        "status": "Published",
+        "recommended_variant": "ML-DSA-65",
+        "replaces": ["RSA", "DSA", "ECDSA"],
+        "description": "Primary NIST standard for general-purpose digital signatures."
     },
     "SLH-DSA": {
-        "standard": "NIST FIPS 205",
+        "name": "SLH-DSA",
+        "fips": "NIST FIPS 205",
         "former_name": "SPHINCS+",
         "purpose": "Stateless Hash-Based Digital Signatures (Conservative Backup)",
         "variants": ["SLH-DSA-SHA2-128f", "SLH-DSA-SHAKE-256s"],
-        "hybrid_recommendation": "Use for high-assurance firmware signing where lattice assumptions are risky"
+        "hybrid_mode": "Use for high-assurance firmware signing where lattice assumptions are risky",
+        "status": "Published",
+        "recommended_variant": "SLH-DSA-SHA2-128f",
+        "replaces": [],
+        "description": "Conservative backup signature scheme relying solely on hash functions."
     },
     "Falcon": {
-        "standard": "NIST Selection (Standardization pending)",
+        "name": "FN-DSA",
+        "fips": "NIST Selection (Standardization pending)",
         "former_name": "Falcon",
         "purpose": "Compact Digital Signatures",
         "variants": ["Falcon-512", "Falcon-1024"],
-        "hybrid_recommendation": "Ideal for constrained bandwidth applications needing short signatures"
+        "hybrid_mode": "Ideal for constrained bandwidth applications needing short signatures",
+        "status": "Draft",
+        "recommended_variant": "Falcon-512",
+        "replaces": [],
+        "description": "Optimized for applications requiring very small signatures and fast verification."
     }
 }
 

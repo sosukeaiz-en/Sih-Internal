@@ -1,7 +1,5 @@
 import os
-import tempfile
-import zipfile
-from typing import List, Union, BinaryIO
+from typing import List
 from cbom.models import CryptoFinding, CBOMSummary, CBOMReport, RiskLevel
 from cbom.scanner.python_scanner import PythonScanner
 from cbom.scanner.java_scanner import JavaScanner
@@ -61,20 +59,3 @@ class RepoScanner:
             summary=summary,
             findings=findings
         )
-
-    def scan_zip_archive(self, zip_input: Union[str, BinaryIO, bytes], project_name: str = "Uploaded_Project") -> CBOMReport:
-        """Extract a zip archive to a temp directory, scan it, and return CBOMReport."""
-        with tempfile.TemporaryDirectory() as temp_dir:
-            if isinstance(zip_input, str):
-                with zipfile.ZipFile(zip_input, 'r') as zip_ref:
-                    zip_ref.extractall(temp_dir)
-            elif isinstance(zip_input, bytes):
-                import io
-                with zipfile.ZipFile(io.BytesIO(zip_input), 'r') as zip_ref:
-                    zip_ref.extractall(temp_dir)
-            else:
-                with zipfile.ZipFile(zip_input, 'r') as zip_ref:
-                    zip_ref.extractall(temp_dir)
-
-            return self.scan_directory(temp_dir, project_name=project_name)
-

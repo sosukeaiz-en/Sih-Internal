@@ -1,56 +1,25 @@
-# Virtual Environments
-.venv/
+# Environments & Virtual Envs
 venv/
-ENV/
+.venv/
 env/
-env.bak/
-venv.bak/
+ENV/
+*.env.local
+*.env.*.local
 
-# Environment Variables & Secrets
-.env
-.env.*
-!.env.example
+# Node / Dependencies
+node_modules/
+frontend/node_modules/
+frontend/dist/
 
-# Python cache & build files
+# Python cache & logs
 __pycache__/
-*.py[cod]
-*$py.class
-*.so
-.Python
-build/
-develop-eggs/
-dist/
-downloads/
-eggs/
-.eggs/
-lib/
-lib64/
-parts/
-sdist/
-var/
-wheels/
-share/python-wheels/
-*.egg-info/
-.installed.cfg
-*.egg
-MANIFEST
-
-# Byte-compiled / optimized / DLL files
 *.pyc
+*.pyo
+*.pyd
+*.log
 
-# IDEs & OS files
+# System & IDE
 .DS_Store
-.DS_Store?
-._*
-.Spotlight-V100
-.Trashes
-ehthumbs.db
 Thumbs.db
 .vscode/
 .idea/
-*.swp
-*.swo
-
-# Temporary / Log files
-*.log
-scratch/
