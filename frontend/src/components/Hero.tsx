@@ -157,10 +157,16 @@ export default function Hero() {
     setPhaseIndex(0);
 
     try {
-      const report =
-        scanMode === "repository"
+      let report: any;
+      if (state.demoMode) {
+        // In demo mode, bypass actual API call
+        await new Promise(resolve => setTimeout(resolve, 2000)); // simulate delay
+        report = state.report;
+      } else {
+        report = scanMode === "repository"
           ? await scanRepo(repoInput.trim(), abortRef.current.signal)
           : await scanUpload(selectedFile!, abortRef.current.signal);
+      }
 
       setLocalLogs((prev) => [
         ...prev,
