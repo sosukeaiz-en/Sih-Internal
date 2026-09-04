@@ -6,7 +6,7 @@ PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 if PROJECT_ROOT not in sys.path:
     sys.path.insert(0, PROJECT_ROOT)
 
-from fastapi import FastAPI, HTTPException, Query
+from fastapi import FastAPI, HTTPException, Query, UploadFile, File
 from cbom.scanner.repo_walker import RepoScanner
 from cbom.models import MoscaInput, MoscaResult, CBOMReport
 from cbom.risk_engine.mosca_calculator import calculate_mosca_risk
@@ -34,6 +34,23 @@ def scan_repository(target_path: str = Query(..., description="Absolute or relat
     project_name = os.path.basename(os.path.abspath(target_path)) or "Codebase"
     report = scanner.scan_directory(target_path, project_name=project_name)
     return report
+
+
+@app.post("/api/v1/scan-upload", response_model=CBOMReport)
+async def scan_upload_archive(file: UploadFile = File(...)):
+    """Upload a repository zip archive and receive structured CBOM analysis."""
+    if not file.filename.endswith(".zip"):
+        raise HTTPException(status_code=400, detail="Only .zip archive files are supported.")
+
+    contents = await file.read()
+    scanner = RepoScanner()
+    project_name = os.path.splitext(file.filename)[0]
+    try:
+        report = scanner.scan_zip_archive(contents, project_name=project_name)
+        return report
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to scan uploaded zip archive: {str(e)}")
+
 
 
 @app.post("/api/v1/mosca", response_model=MoscaResult)
