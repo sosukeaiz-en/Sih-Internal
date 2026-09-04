@@ -1,10 +1,13 @@
-# Environments & Virtual Envs
+# Environments & Secrets
+.env
+.env.local
+*.env.local
+*.env.*.local
+!.env.example
 venv/
 .venv/
 env/
 ENV/
-*.env.local
-*.env.*.local
 
 # Node / Dependencies
 node_modules/
