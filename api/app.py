@@ -1,5 +1,8 @@
 import os
 import sys
+import tempfile
+import zipfile
+import shutil
 
 # Ensure project root directory is in sys.path
 PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
@@ -7,6 +10,7 @@ if PROJECT_ROOT not in sys.path:
     sys.path.insert(0, PROJECT_ROOT)
 
 from fastapi import FastAPI, HTTPException, Query, UploadFile, File
+from fastapi.middleware.cors import CORSMiddleware
 from cbom.scanner.repo_walker import RepoScanner
 from cbom.models import MoscaInput, MoscaResult, CBOMReport
 from cbom.risk_engine.mosca_calculator import calculate_mosca_risk
@@ -16,6 +20,14 @@ app = FastAPI(
     title="CBOM Sentinel API",
     description="Automated Cryptographic Bill of Materials Discovery & Post-Quantum Cryptography Risk Assessment API",
     version="1.0.0"
+)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Adjust in production
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 
@@ -37,19 +49,32 @@ def scan_repository(target_path: str = Query(..., description="Absolute or relat
 
 
 @app.post("/api/v1/scan-upload", response_model=CBOMReport)
-async def scan_upload_archive(file: UploadFile = File(...)):
-    """Upload a repository zip archive and receive structured CBOM analysis."""
-    if not file.filename.endswith(".zip"):
-        raise HTTPException(status_code=400, detail="Only .zip archive files are supported.")
-
-    contents = await file.read()
-    scanner = RepoScanner()
-    project_name = os.path.splitext(file.filename)[0]
+def scan_upload_repository(file: UploadFile = File(...)):
+    """Upload a zipped codebase repository and generate structured CBOM report."""
+    if not file.filename.endswith('.zip'):
+        raise HTTPException(status_code=400, detail="Only .zip files are supported.")
+    
+    # Create a temporary directory
+    temp_dir = tempfile.mkdtemp()
     try:
-        report = scanner.scan_zip_archive(contents, project_name=project_name)
+        # Save the uploaded file
+        zip_path = os.path.join(temp_dir, file.filename)
+        with open(zip_path, "wb") as buffer:
+            shutil.copyfileobj(file.file, buffer)
+        
+        # Extract the zip file
+        extract_dir = os.path.join(temp_dir, "extracted")
+        os.makedirs(extract_dir, exist_ok=True)
+        with zipfile.ZipFile(zip_path, 'r') as zip_ref:
+            zip_ref.extractall(extract_dir)
+            
+        scanner = RepoScanner()
+        project_name = os.path.splitext(file.filename)[0] or "UploadedCodebase"
+        report = scanner.scan_directory(extract_dir, project_name=project_name)
         return report
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Failed to scan uploaded zip archive: {str(e)}")
+    finally:
+        # Clean up temporary directory
+        shutil.rmtree(temp_dir, ignore_errors=True)
 
 
 

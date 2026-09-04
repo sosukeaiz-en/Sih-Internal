@@ -1,0 +1,10 @@
+{
+  "description": "Provides a clean, professional dashboard with clear stats and graphs to help users monitor and analyze key data effectively without AI-style clutter.",
+  "robots": {
+    "index": false
+  },
+  "accessibility": {
+    "addBypassLinks": false,
+    "ignoreReducedMotion": false
+  }
+}
