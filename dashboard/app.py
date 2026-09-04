@@ -124,7 +124,7 @@ if report:
                     "Line": f.line_number,
                     "Language": f.language,
                     "Algorithm": f.algorithm,
-                    "Key Size": f.key_size or "N/A",
+                    "Key Size": str(f.key_size) if f.key_size is not None else "N/A",
                     "Operation": f.operation or "Unknown",
                     "Risk Level": f.risk_level.value,
                     "Quantum Vulnerable": "⚠️ YES" if f.quantum_vulnerable else "✅ NO",
