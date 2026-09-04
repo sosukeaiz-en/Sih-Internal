@@ -10,7 +10,7 @@ import { normalizeCBOMReport } from "../utils/normalization";
 const API_BASE =
   (import.meta.env.VITE_API_BASE_URL as string | undefined) ??
   (import.meta.env.VITE_API_BASE as string | undefined) ??
-  "http://localhost:8000";
+  (import.meta.env.PROD ? "" : "http://localhost:8000");
 
 // ─── shared fetch helper ─────────────────────────────────────────────────────
 
