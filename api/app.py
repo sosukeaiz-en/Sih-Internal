@@ -36,6 +36,11 @@ def read_root():
     return {"message": "CBOM Sentinel API online", "version": "1.0.0"}
 
 
+@app.get("/api/health")
+def health_check():
+    return {"status": "ok", "message": "CBOM Sentinel API online"}
+
+
 @app.get("/api/v1/scan", response_model=CBOMReport)
 def scan_repository(target_path: str = Query(..., description="Absolute or relative path to target repo directory")):
     """Scan a target codebase repository and generate structured CBOM report."""

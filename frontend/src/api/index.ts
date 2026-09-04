@@ -145,7 +145,7 @@ export async function getRecommendation(
 
 export async function checkBackendHealth(): Promise<boolean> {
   try {
-    await apiFetch<unknown>("/", { timeout: 5_000 });
+    await apiFetch<unknown>("/api/health", { timeout: 5_000 });
     return true;
   } catch {
     return false;
